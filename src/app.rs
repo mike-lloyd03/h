@@ -7,4 +7,7 @@ use clap::Parser;
 pub struct App {
     #[arg(help = "The command to get help for")]
     pub cmd: Vec<String>,
+
+    #[arg(short, long, help = "Alternate config directory to use")]
+    pub config_dir: Option<String>,
 }
