@@ -31,13 +31,16 @@ pub fn args_to_cmd(args: &[String]) -> Command {
     cmd
 }
 
-pub fn pipe_to_pager(output: ChildStdout) -> Result<()> {
-    let pager = env::var("PAGER").unwrap_or_else(|_| "/usr/bin/less".to_string());
+pub fn pipe_to_pager(output: ChildStdout, pager: Option<String>) -> Result<()> {
+    let pager = match pager {
+        Some(p) => p,
+        None => env::var("PAGER").unwrap_or_else(|_| "/usr/bin/less".to_string()),
+    };
 
     Command::new(&pager)
         .stdin(Stdio::from(output))
         .status()
-        .context(format!("Failed to pipe help to $PAGER ({})", pager))?;
+        .context(format!("Failed to pipe help to pager ({pager})"))?;
 
     Ok(())
 }

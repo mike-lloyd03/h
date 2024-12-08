@@ -42,7 +42,7 @@ fn main() -> Result<()> {
                     let help_text = cmd.stdout(Stdio::piped()).spawn()?;
 
                     match help_text.stdout {
-                        Some(o) => pipe_to_pager(o)?,
+                        Some(o) => pipe_to_pager(o, config.pager)?,
                         None => todo!(),
                     }
                 } else {
@@ -66,7 +66,7 @@ fn main() -> Result<()> {
             .map_err(|_| anyhow!("Could not get help for '{}'", &app.cmd.join(" ")))?;
 
         if let Some(help_text) = help_text.stdout {
-            pipe_to_pager(help_text)?;
+            pipe_to_pager(help_text, config.pager)?;
         } else {
             bail!("No help available for '{}'", &app.cmd.join(" "))
         }
