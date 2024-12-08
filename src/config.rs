@@ -7,6 +7,7 @@ use crate::wrapper::Wrapper;
 
 #[derive(Debug, Default, Deserialize)]
 pub struct Config {
+    pub pager: Option<String>,
     pub wrappers: Option<Vec<Wrapper>>,
 }
 

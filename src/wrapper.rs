@@ -7,7 +7,7 @@ pub struct Wrapper {
     pub cmd: String,
     pub replacement: String,
     #[serde(default)]
-    pub pager: bool,
+    pub use_pager: bool,
 }
 
 impl Wrapper {
@@ -47,7 +47,7 @@ fn test_parse_replacement() -> Result<()> {
     let w = Wrapper {
         cmd: "cargo (.*)".into(),
         replacement: "cargo help {1}".into(),
-        pager: true,
+        use_pager: true,
     };
 
     let args: Vec<String> = vec!["cargo", "run"].into_iter().map(String::from).collect();

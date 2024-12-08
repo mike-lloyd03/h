@@ -4,6 +4,7 @@ use clap::Parser;
 #[command(name = "h")]
 #[command(about = "Easily get help for any command")]
 #[command(version, about, long_about = None)]
+#[command(arg_required_else_help = true)]
 pub struct App {
     #[arg(help = "The command to get help for")]
     pub cmd: Vec<String>,

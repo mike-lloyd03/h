@@ -38,7 +38,7 @@ fn main() -> Result<()> {
 
                 let mut cmd = args_to_cmd(&replacement_args);
 
-                if wrapper.pager {
+                if wrapper.use_pager {
                     let help_text = cmd.stdout(Stdio::piped()).spawn()?;
 
                     match help_text.stdout {
