@@ -49,4 +49,5 @@ go help build | $PAGER
 
 - `cmd`: Is a regex which accepts capture groups (anything inside parenthesis)
 - `replacement`: A string to replace the search arguments. A number inside curly braces will be replaced by the corresponding capture group. Capture groups are numbered starting with 1.
-- `use_pager`: Pipe the output of the resulting command to the `$PAGER`.
+- `use_pager`: Pipe the output of the resulting command to the `$PAGER` or the configured pager.
+- `use_stderr`: By default, stdout is used when piping to the pager. This uses stderr instead.
