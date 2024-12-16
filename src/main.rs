@@ -39,12 +39,22 @@ fn main() -> Result<()> {
                 let mut cmd = args_to_cmd(&replacement_args);
 
                 if wrapper.use_pager {
-                    let help_text = cmd.stdout(Stdio::piped()).spawn()?;
+                    let pipe = Stdio::piped();
 
-                    match help_text.stdout {
-                        Some(o) => pipe_to_pager(o, config.pager)?,
-                        None => todo!(),
+                    if wrapper.use_stderr {
+                        let help_text = cmd.stderr(pipe).spawn()?;
+                        match help_text.stderr {
+                            Some(o) => pipe_to_pager(o, config.pager)?,
+                            None => bail!("No help text was found on stderr"),
+                        }
+                    } else {
+                        let help_text = cmd.stdout(pipe).spawn()?;
+                        match help_text.stdout {
+                            Some(o) => pipe_to_pager(o, config.pager)?,
+                            None => bail!("No help text was found on stdout"),
+                        }
                     }
+
                 } else {
                     cmd.status()?;
                 }

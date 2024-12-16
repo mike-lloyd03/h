@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{bail, Result};
 use regex::Regex;
 use serde::Deserialize;
 
@@ -8,6 +8,8 @@ pub struct Wrapper {
     pub replacement: String,
     #[serde(default)]
     pub use_pager: bool,
+    #[serde(default)]
+    pub use_stderr: bool,
 }
 
 impl Wrapper {
@@ -23,7 +25,7 @@ impl Wrapper {
         let search_string = args.join(" ");
         let caps = re.captures(&search_string);
 
-        let mut result = self.replacement;
+        let mut result = self.replacement.clone();
 
         if let Some(caps) = caps {
             for (i, c) in caps.iter().enumerate() {
@@ -33,7 +35,15 @@ impl Wrapper {
                 }
 
                 if let Some(capture) = c {
-                    result = result.replace(&format!("{{{i}}}"), capture.as_str());
+                    let replace_string = format!("{{{i}}}");
+                    if result.contains(&replace_string) {
+                        result = result.replace(&replace_string, capture.as_str());
+                    } else {
+                        bail!(
+                            "Capture group {i} is missing from the replace string '{}'",
+                            self.replacement
+                        )
+                    }
                 }
             }
         }
@@ -48,6 +58,7 @@ fn test_parse_replacement() -> Result<()> {
         cmd: "cargo (.*)".into(),
         replacement: "cargo help {1}".into(),
         use_pager: true,
+        use_stderr: false,
     };
 
     let args: Vec<String> = vec!["cargo", "run"].into_iter().map(String::from).collect();

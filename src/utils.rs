@@ -31,7 +31,7 @@ pub fn args_to_cmd(args: &[String]) -> Command {
     cmd
 }
 
-pub fn pipe_to_pager(output: ChildStdout, pager: Option<String>) -> Result<()> {
+pub fn pipe_to_pager<T>(output: T, pager: Option<String>) -> Result<()> where Stdio: From<T> {
     let pager = match pager {
         Some(p) => p,
         None => env::var("PAGER").unwrap_or_else(|_| "/usr/bin/less".to_string()),
